@@ -130,6 +130,8 @@ const handleHome = () => {
   }
 }
 
+
+
 </script>
 
 <template>
@@ -155,7 +157,7 @@ const handleHome = () => {
     </div>
   </header>
   <RouterView class="z-2"  v-if="isUserAuth === false"/>
-
+  
   <div class="container-fluid" v-if="isUserAuth"> 
     <div class="row">
       <div class="col-12 py-2 pb-1">
@@ -167,8 +169,8 @@ const handleHome = () => {
                 </button>
             </div>
             <div class="col-2 my-auto">
-              <h5 class="logo m-0 d-md-block d-none text-start" @click="handleHome">winner's<span class="title-logo">life</span></h5>
-              <h5 class="logo m-0 d-md-none d-block text-start" @click="handleHome">winner's<span class="title-logo">life</span></h5>
+              <h5 class="logo m-0 d-md-block d-none text-start text-white" @click="handleHome">winner's<span class="title-logo">life</span></h5>
+              <h5 class="logo m-0 d-md-none d-block text-start text-white" @click="handleHome">winner's<span class="title-logo">life</span></h5>
             </div>
             <div class="col-5 offset-1">
               <div class="form-group has-feedback">
@@ -204,7 +206,7 @@ const handleHome = () => {
                     </a>
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Cursos</a>
+                            <RouterLink to="/" class="sidebar-link">Cursos</RouterLink>
                         </li>
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link">Libros</a>
@@ -213,15 +215,15 @@ const handleHome = () => {
                     </ul>
                 </li> 
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <RouterLink to="/calendar" class="sidebar-link">
                         <i class="fi fi-rr-video-camera-alt"></i>
-                        <span class="text-white">Task</span>
-                    </a>
+                        <span class="text-white">Zooms</span>
+                    </RouterLink>
                 </li>               
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class="fi fi-rr-tool-box"></i>
-                        <span class="text-white">Task</span>
+                        <span class="text-white">Herramientas</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
@@ -232,18 +234,12 @@ const handleHome = () => {
                     </a>
                     <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
-                                data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
-                                Two Links
+                            <a href="https://backoffice.winnerworldlatino.com/login" target="_blank" class="sidebar-link">
+                                BackOffice
                             </a>
-                            <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
-                                <li class="sidebar-item">
-                                    <a href="#" class="sidebar-link">Link 1</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="#" class="sidebar-link">Link 2</a>
-                                </li>
-                            </ul>
+                            <a href="https://winnerworldlatino.com/ecommerce/" target="_blank" class="sidebar-link">
+                                Ecommerce
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -253,18 +249,12 @@ const handleHome = () => {
                         <span class="text-white">Congifuracion</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class="fi fi-rr-exit"></i>
-                        <span class="text-white">Cerrar Sesion</span>
-                    </a>
-                </li>
             </ul>
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-link">
-                    <i class="lni lni-exit"></i>
-                    <span>Logout</span>
-                </a>
+                <RouterLink to="/logout" class="sidebar-link">                    
+                  <i class="fi fi-rr-exit"></i>
+                  <span class="text-white">Cerrar Sesion</span>
+                </RouterLink>
             </div>
         </aside>
         <div class="main p-3">            
