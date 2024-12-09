@@ -467,3 +467,8 @@ a.sidebar-link:hover {
 .bg-transparent {
   background-color: transparent !important;
 }
+
+.bg-img{
+  background-image: url('./background.png');
+  height: 100vh;
+}
