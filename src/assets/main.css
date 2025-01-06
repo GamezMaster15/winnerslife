@@ -28,7 +28,7 @@ p{
   line-height: .9em;
 }
 
-span {
+.span {
   color: var(--color-text-secundary) !important;
 }
 
@@ -471,4 +471,5 @@ a.sidebar-link:hover {
 .bg-img{
   background-image: url('./background.png');
   height: 100vh;
+  
 }
