@@ -3,6 +3,9 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
 
 const router = useRouter()
 const store = useStore()
@@ -12,20 +15,19 @@ const isLoginView = ref(true)
 
 // Estado reactivo para los formularios usando reactive
 const loginForm = reactive({
-  username: '',
-  password: '',
+  correo_user: '',
+  password_user: '',
   isSubmitting: false,
   errors: {}
 })
 
 const registerForm = reactive({
-  primerNombre: '',
-  segundoNombre: '',
-  primerApellido: '',
-  segundoApellido: '',
-  ci: '',
-  email: '',
-  password: '',
+  nombre_user: '',
+  apellido_user: '',
+  ci_user: '',
+  correo_user: '',
+  password_user: '',
+  status: 'Activo',
   isSubmitting: false,
   errors: {}
 })
@@ -37,11 +39,11 @@ const isAuthenticated = computed(() => store.getters.isAuthenticated)
 const validateLoginForm = () => {
   loginForm.errors = {}
   
-  if (!loginForm.username.trim()) {
-    loginForm.errors.username = 'El nombre de usuario es requerido'
+  if (!loginForm.correo_user.trim()) {
+    loginForm.errors.correo_user = 'El nombre de usuario es requerido'
   }
-  if (!loginForm.password) {
-    loginForm.errors.password = 'La contraseña es requerida'
+  if (!loginForm.password_user) {
+    loginForm.errors.password_user = 'La contraseña es requerida'
   }
   
   return Object.keys(loginForm.errors).length === 0
@@ -50,24 +52,24 @@ const validateLoginForm = () => {
 const validateRegisterForm = () => {
   registerForm.errors = {}
   
-  if (!registerForm.primerNombre.trim()) {
-    registerForm.errors.primerNombre = 'El primer nombre es requerido'
+  if (!registerForm.nombre_user.trim()) {
+    registerForm.errors.nombre_user = 'El primer nombre es requerido'
   }
-  if (!registerForm.primerApellido.trim()) {
-    registerForm.errors.primerApellido = 'El primer apellido es requerido'
+  if (!registerForm.apellido_user.trim()) {
+    registerForm.errors.apellido_user = 'El primer apellido es requerido'
   }
-  if (!registerForm.ci.trim()) {
-    registerForm.errors.ci = 'El documento de identidad es requerido'
+  if (!registerForm.ci_user.trim()) {
+    registerForm.errors.ci_user = 'El documento de identidad es requerido'
   }
-  if (!registerForm.email.trim()) {
-    registerForm.errors.email = 'El correo electrónico es requerido'
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerForm.email)) {
-    registerForm.errors.email = 'El correo electrónico no es válido'
+  if (!registerForm.correo_user.trim()) {
+    registerForm.errors.correo_user = 'El correo electrónico es requerido'
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerForm.correo_user)) {
+    registerForm.errors.correo_user = 'El correo electrónico no es válido'
   }
-  if (!registerForm.password) {
-    registerForm.errors.password = 'La contraseña es requerida'
-  } else if (registerForm.password.length < 6) {
-    registerForm.errors.password = 'La contraseña debe tener al menos 6 caracteres'
+  if (!registerForm.password_user) {
+    registerForm.errors.password_user = 'La contraseña es requerida'
+  } else if (registerForm.password_user.length < 8) {
+    registerForm.errors.password_user = 'La contraseña debe tener al menos 8 caracteres'
   }
   
   return Object.keys(registerForm.errors).length === 0
@@ -87,20 +89,34 @@ const handleLogin = async () => {
   loginForm.isSubmitting = true
   
   try {
-    if (loginForm.username === 'carlitos' && loginForm.password === '234') {
-      await store.dispatch('login', {
-        username: loginForm.username,
-        password: loginForm.password
-      })
+
+    const response = await store.dispatch('login', { correo_user: loginForm.correo_user, password_user: loginForm.password_user })
+
+    if (response.status === 200) {
+
       router.push({ name: 'dashboard' })
-    } else {
-      loginForm.errors.auth = 'Credenciales inválidas'
+
+    } else if(response.status === 401) {
+      toast.warning('Credenciales Incorrectas', {
+        autoClose: 3000,
+        position: toast.POSITION.BOTTOM_CENTER
+      })
     }
+
   } catch (error) {
-    loginForm.errors.auth = 'Credenciales inválidas'
+
+    toast.warning('Ups... Ocurrio un error del sistema', {
+      autoClose: 3000
+    })
+
+    console.log(error); 
+
   } finally {
+
     loginForm.isSubmitting = false
+
   }
+
 }
 
 const handleRegister = async () => {
@@ -109,11 +125,24 @@ const handleRegister = async () => {
   registerForm.isSubmitting = true
   
   try {
-    // Aquí iría la lógica de registro
-    // await store.dispatch('register', registerForm)
+
+    const respuesta = await store.dispatch('register', registerForm)
+    
+    if(respuesta.status === 201){
+      toast.success(respuesta.data.message, { 
+        autoClose: 3000,        
+        position: toast.POSITION.BOTTOM_CENTER
+      });      
+    }
+    
     isLoginView.value = true
   } catch (error) {
-    registerForm.errors.submit = 'Error al registrar usuario'
+    toast.warning('Error al registrar el Usuario', { 
+        autoClose: 3000,        
+        position: toast.POSITION.BOTTOM_CENTER
+    });
+    console.log(error);
+    
   } finally {
     registerForm.isSubmitting = false
   }
@@ -137,14 +166,14 @@ const handleRegister = async () => {
         <form @submit.prevent="handleLogin" class="mt-4">
           <div class="form-group">
             <input
-              type="text"
+              type="email"
               class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': loginForm.errors.username }"
-              placeholder="Nombre de usuario"
-              v-model="loginForm.username"
+              :class="{ 'is-invalid': loginForm.errors.correo_user }"
+              placeholder="Correo Electronico"
+              v-model="loginForm.correo_user"
             >
-            <div class="invalid-feedback" v-if="loginForm.errors.username">
-              {{ loginForm.errors.username }}
+            <div class="invalid-feedback" v-if="loginForm.errors.correo_user">
+              {{ loginForm.errors.correo_user }}
             </div>
           </div>
 
@@ -152,12 +181,12 @@ const handleRegister = async () => {
             <input
               type="password"
               class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': loginForm.errors.password }"
+              :class="{ 'is-invalid': loginForm.errors.password_user }"
               placeholder="Contraseña"
-              v-model="loginForm.password"
+              v-model="loginForm.password_user"
             >
-            <div class="invalid-feedback" v-if="loginForm.errors.password">
-              {{ loginForm.errors.password }}
+            <div class="invalid-feedback" v-if="loginForm.errors.password_user">
+              {{ loginForm.errors.password_user }}
             </div>
           </div>
 
@@ -192,12 +221,12 @@ const handleRegister = async () => {
             <input
               type="text"
               class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': registerForm.errors.primerNombre }"
+              :class="{ 'is-invalid': registerForm.errors.nombre_user }"
               placeholder="Primer Nombre"
-              v-model="registerForm.primerNombre"
+              v-model="registerForm.nombre_user"
             >
-            <div class="invalid-feedback" v-if="registerForm.errors.primerNombre">
-              {{ registerForm.errors.primerNombre }}
+            <div class="invalid-feedback" v-if="registerForm.errors.nombre_user">
+              {{ registerForm.errors.nombre_user }}
             </div>
           </div>
 
@@ -205,64 +234,38 @@ const handleRegister = async () => {
             <input
               type="text"
               class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': registerForm.errors.primerNombre }"
-              placeholder="Segundo Nombre"
-              v-model="registerForm.segundoNombre"
-            >
-            <div class="invalid-feedback" v-if="registerForm.errors.primerNombre">
-              {{ registerForm.errors.segundoNombre }}
-            </div>
-          </div>
-
-          <div class="col-6 text-start mt-3">
-            <input
-              type="text"
-              class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': registerForm.errors.primerNombre }"
+              :class="{ 'is-invalid': registerForm.errors.apellido_user }"
               placeholder="Primer Apellido"
-              v-model="registerForm.primerApellido"
+              v-model="registerForm.apellido_user"
             >
-            <div class="invalid-feedback" v-if="registerForm.errors.primerNombre">
-              {{ registerForm.errors.primerApellido }}
+            <div class="invalid-feedback" v-if="registerForm.errors.apellido_user">
+              {{ registerForm.errors.apellido_user }}
             </div>
           </div>
 
-          <div class="col-6 text-start mt-3">
-            <input
-              type="text"
-              class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': registerForm.errors.primerNombre }"
-              placeholder="Segundo Apellido"
-              v-model="registerForm.segundoApellido"
-            >
-            <div class="invalid-feedback" v-if="registerForm.errors.primerNombre">
-              {{ registerForm.errors.segundoApellido }}
-            </div>
-          </div>
-
-            <div class="col-12 text-start mt-3">
+          <div class="col-12 text-start mt-3">
             <input
                 type="text"
                 class="bg-input-primary-wl w-100"
-                :class="{ 'is-invalid': registerForm.errors.primerNombre }"
+                :class="{ 'is-invalid': registerForm.errors.ci_user }"
                 placeholder="Documento de Identidad"
-                v-model="registerForm.ci"
+                v-model="registerForm.ci_user"
             >
-            <div class="invalid-feedback" v-if="registerForm.errors.primerNombre">
-                {{ registerForm.errors.ci }}
+            <div class="invalid-feedback" v-if="registerForm.errors.ci_user">
+                {{ registerForm.errors.ci_user }}
             </div>
-            </div>
+          </div>
 
           <div class="col-12 text-start mt-3">
             <input
               type="text"
               class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': registerForm.errors.primerNombre }"
+              :class="{ 'is-invalid': registerForm.errors.correo_user }"
               placeholder="Correo Electrónico"
-              v-model="registerForm.email"
+              v-model="registerForm.correo_user"
             >
-            <div class="invalid-feedback" v-if="registerForm.errors.primerNombre">
-              {{ registerForm.errors.email }}
+            <div class="invalid-feedback" v-if="registerForm.errors.correo_user">
+              {{ registerForm.errors.correo_user }}
             </div>
           </div>
 
@@ -270,12 +273,12 @@ const handleRegister = async () => {
             <input
               type="password"
               class="bg-input-primary-wl w-100"
-              :class="{ 'is-invalid': registerForm.errors.primerNombre }"
+              :class="{ 'is-invalid': registerForm.errors.password_user }"
               placeholder="Contraseña"
-              v-model="registerForm.password"
+              v-model="registerForm.password_user"
             >
-            <div class="invalid-feedback" v-if="registerForm.errors.primerNombre">
-              {{ registerForm.errors.password }}
+            <div class="invalid-feedback" v-if="registerForm.errors.password_user">
+              {{ registerForm.errors.password_user }}
             </div>
           </div>
 

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
@@ -35,21 +36,42 @@ export default createStore({
     },
 
     actions: {
-        async login({ commit }, credentials) {
+        async login({ commit }, credentials) {            
+            const url = 'https://campusiutirlaempresarial.com/api/public/api/loginUser';
             try {
-                // Aquí iría la lógica real de autenticación con tu API
-                const response = await mockAuthRequest(credentials)
+                const respuesta = await axios.post(url, credentials);          
+
+                if(respuesta.status === 200 && respuesta.data.data.correo_user && respuesta.data.access_token) {
+                    commit('SET_AUTH_STATE', {
+                        loggedIn: true,
+                        correo_user: respuesta.data.data.correo_user,
+                        token: respuesta.data.access_token
+                    })                       
+                    return respuesta;
+                }
                 
-                commit('SET_AUTH_STATE', {
-                    loggedIn: true,
-                    user: response.user,
-                    token: response.token
-                })
-                
-                return Promise.resolve(response)
             } catch (error) {
                 commit('CLEAR_AUTH_STATE')
-                return Promise.reject(error)
+                return error
+            }
+        },
+
+        async register({ commit }, registerForm) {
+            const url = 'https://campusiutirlaempresarial.com/api/public/api/register';
+            const datosUsuario = {
+                nombre_user: registerForm.nombre_user,
+                apellido_user: registerForm.apellido_user,
+                ci_user: registerForm.ci_user,
+                correo_user: registerForm.correo_user,
+                password_user: registerForm.password_user,
+                status_user: 'activo'
+            };
+            try {
+                const respuesta = await axios.post(url, datosUsuario);
+                console.log('Usuario registrado:', respuesta.data);
+                return respuesta;
+            } catch (error) {
+                console.log(error)
             }
         },
 
