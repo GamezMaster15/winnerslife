@@ -42,6 +42,15 @@ const privateRoutes = [
     }
   },
   {
+    path: '/addCourse',
+    name: 'AddCourse',
+    component: () => import('../views/AddCourseView.vue'),
+    meta: { 
+      requiresAuth: true,
+      title: 'Agregar Curso'
+    }
+  },
+  {
     path: '/course/:id',
     name: 'course',
     component: () => import('../views/CourseView.vue'),

@@ -91,13 +91,38 @@ const handleHome = () => {
 </script>
 <template>
   <div class="container-fluid" v-if="isUserAuth"> 
-    <div class="row">              
+    <div class="row">
+      <div class="col-12 py-2 pb-1">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-1 pt-2 my-auto">
+              <button class="toggle-btn m-0 p-0" type="button" @click="expandedMenu">
+                  <i class="fi fi-rr-apps"></i>
+                </button>
+            </div>
+            <div class="col-2 my-auto">
+              <h5 class="logo m-0 d-md-block d-none text-start text-white span" @click="handleHome">winner's<span class="title-logo">life</span></h5>
+              <h5 class="logo m-0 d-md-none d-block text-start text-white span" @click="handleHome">winner's<span class="title-logo">life</span></h5>
+            </div>
+            <div class="col-5 offset-1">
+              <div class="form-group has-feedback">
+                <span class="fi fi-rr-search form-control-feedback text-white"></span>
+                <input type="text" class="form-control bg-dark-input-flat text-white" placeholder="Que deseas aprender?">
+              </div>
+            </div>
+            <div class="col-2">
+              <p></p>
+            </div>
+            <div class="col-1 d-flex my-auto">
+              <a href="" class="p-2"><i class="fi fi-rr-store-alt"></i></a>
+              <a href="" class="p-2 ms-3"><i class="fi fi-rr-circle-user"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="col-12 p-0">
         <div class="wrapper">
         <aside id="sidebar">
-            <button class="toggle-btn text-center btn-logo" width="90px" height="90px"  type="button" @click="expandedMenu">
-              <img src="../assets/logo W.png" width="40px" alt="">
-            </button>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
                     <RouterLink to="/" class="sidebar-link">
@@ -164,7 +189,7 @@ const handleHome = () => {
                 </RouterLink>
             </div>
         </aside>
-        <div class="main p-4">            
+        <div class="main p-3">            
           <RouterView class="z-2"/>
         </div>
       </div>

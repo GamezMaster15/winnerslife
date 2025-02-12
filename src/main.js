@@ -6,6 +6,7 @@ import router from './router'
 import store from './stores'
 import Vue3Toasity from 'vue3-toastify';
 
+
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'

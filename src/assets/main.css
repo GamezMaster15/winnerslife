@@ -129,7 +129,7 @@ a{
 }
 
 .bg-darkk {
-  background-color: rgb(29, 44, 52) !important;
+  background-color: #1d2c34 !important;
 }
 
 .bg-dark:hover {
@@ -348,7 +348,7 @@ li {
 }
 
 .main {
-    height: 90vh;
+    height: 100vh;
     width: 100%;
     overflow: hidden;
     overflow-y: scroll;
@@ -360,12 +360,14 @@ li {
 }
 
 #sidebar {
-    width: 70px;
+    width: 80px;
     min-width: 70px;
+    height: 100vh;
     z-index: 1000;
     transition: all .25s ease-in-out;
     display: flex;
     flex-direction: column;
+    background-color: #222222;
 }
 
 #sidebar.expand {
@@ -472,4 +474,31 @@ a.sidebar-link:hover {
   background-image: url('./background.png');
   height: 100vh;
   
+}
+
+.inputAdd {
+  font-size: 1.5rem !important;
+}
+
+.inputAdd::placeholder {
+  font-size: 1.5rem !important;
+}
+
+.inputAdd:focus {
+  box-shadow: none;
+  border: none;
+  background-color: transparent !important;
+}
+
+.small-text{
+  font-size: 0.9em !important;
+}
+
+.small-text::placeholder {
+  font-size: 0.9em !important;
+}
+
+.btn-logo{
+  height: 70px;
+  background: #174981;
 }
